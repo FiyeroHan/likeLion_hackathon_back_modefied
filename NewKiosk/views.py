@@ -30,4 +30,6 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
 
 class TestApiView(APIView):
     def get(self, request):
-        return Response(MenuSerializer.data)
+        test = Product.objects.filter(category=1)
+        serializer = ProductSerializer(test)
+        return Response(serializer.data)

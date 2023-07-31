@@ -21,6 +21,13 @@ class Product_OrderSerializer(serializers.ModelSerializer):
         model = Product_Order
         fields = '__all__'
 
+'''
+class TestSerializer(serializers.Serializer):
+    class Meta:
+        model = Product
+        fields = ''
+'''
+    
 class MenuSerializer(serializers.Serializer):
     떡복이류=ProductSerializer(many=True)
     사이드류=ProductSerializer(many=True)
