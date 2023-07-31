@@ -4,7 +4,7 @@ from .models import Category, Product, Order, Product_Order
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = [ 'category_name']
+        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,12 +29,10 @@ class TestSerializer(serializers.Serializer):
 '''
     
 class MenuSerializer(serializers.Serializer):
-    떡복이류=ProductSerializer(many=True)
-    사이드류=ProductSerializer(many=True)
-    세트메뉴=ProductSerializer(many=True) 
-    
-    product = ProductSerializer()
+    떡볶이류 = Product.objects.filter(category=1 )
+    사이드류 = Product.objects.filter(category=2 )
+    세트메뉴 = Product.objects.filter(category=3 )
 
     class Meta:
         model = Category
-        fields = ["category_name", "product"]
+        fields = ["떡볶이류", "사이드류","세트메뉴"]
