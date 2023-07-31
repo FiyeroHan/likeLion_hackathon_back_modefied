@@ -32,7 +32,8 @@ class MenuSerializer(serializers.Serializer):
     떡볶이류 = Product.objects.filter(category=1 )
     사이드류 = Product.objects.filter(category=2 )
     세트메뉴 = Product.objects.filter(category=3 )
-
+    모든메뉴 = Product.objects.all()
+    
     class Meta:
         model = Category
-        fields = ["떡볶이류", "사이드류","세트메뉴"]
+        fields = ["떡볶이류", "사이드류","세트메뉴","모든메뉴"]
