@@ -20,7 +20,7 @@ urlpatterns = [
 from django.urls import path,include
 from django.contrib import admin
 
-from .views import CategoryViewSet,  ProductViewSet, OrderViewSet ,Product_OrderViewSet
+from .views import CategoryViewSet,  ProductViewSet, OrderViewSet ,Product_OrderViewSet, MenuViewSet
 
 from rest_framework import routers
 
@@ -29,6 +29,7 @@ routers.register('category', CategoryViewSet)
 routers.register('product', ProductViewSet)
 routers.register('order', OrderViewSet)
 routers.register('product-order', Product_OrderViewSet)
+routers.register('Menu', MenuViewSet)
 
 urlpatterns = [
     path('api/', include(routers.urls)),

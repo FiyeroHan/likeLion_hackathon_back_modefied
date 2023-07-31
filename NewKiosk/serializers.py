@@ -27,7 +27,7 @@ class MenuSerializer(serializers.Serializer):
     세트메뉴=ProductSerializer(many=True) 
     
     product = ProductSerializer()
-    
+
     class Meta:
         model = Category
         fields = ("category_name", "product")
