@@ -30,4 +30,4 @@ class MenuSerializer(serializers.Serializer):
 
     class Meta:
         model = Category
-        fields = ("category_name", "product")
+        fields = ["category_name", "product"]
