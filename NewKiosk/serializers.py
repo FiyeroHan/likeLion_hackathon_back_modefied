@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = '__all__', 'products'
 
 class Product_OrderSerializer(serializers.ModelSerializer):
     class Meta:
