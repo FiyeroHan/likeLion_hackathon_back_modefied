@@ -20,3 +20,8 @@ class Product_OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product_Order
         fields = '__all__'
+
+class MenuSerializer(serializers.Serializer):
+    떡복이류=ProductSerializer(many=True)
+    사이드류=ProductSerializer(many=True)
+    세트메뉴=ProductSerializer(many=True)
