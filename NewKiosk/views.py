@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from rest_framework import status
 
 
 from rest_framework import viewsets
@@ -25,6 +26,16 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = OrderSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            order_number = serializer.instance.order_number  # 주문번호
+            return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
+            #주문 성공시 주문번호 반환
+        else:
+            return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
+            
 class MenuApiView(APIView):
     def get(self, request):
         ttuk = Product.objects.filter(category=1)

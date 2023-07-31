@@ -27,5 +27,8 @@ class Product_Order(models.Model):
     is_takeout = models.BooleanField(default=True)
     total_price = models.IntegerField() #상품개수 * 단가 #
     
-    
+class Product_OrderDetail(models.Model):
+    order = models.ForeignKey(Order, related_name='order_details', on_delete=models.CASCADE)
+    id = models.ForeignKey(Product, related_name='product_order_details', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)  # 상품 주문 수량  
    
