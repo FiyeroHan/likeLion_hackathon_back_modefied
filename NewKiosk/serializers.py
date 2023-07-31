@@ -24,4 +24,10 @@ class Product_OrderSerializer(serializers.ModelSerializer):
 class MenuSerializer(serializers.Serializer):
     떡복이류=ProductSerializer(many=True)
     사이드류=ProductSerializer(many=True)
-    세트메뉴=ProductSerializer(many=True)
+    세트메뉴=ProductSerializer(many=True) 
+    
+    product = ProductSerializer()
+    
+    class Meta:
+        model = Category
+        fields = ("category_name", "product")
