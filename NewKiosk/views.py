@@ -29,9 +29,7 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
 class TestApiView(APIView):
-    def get(self, request):
-        queryset = Product.objects.filter(category=1, category=2, category=3)
-        #사이드류 = Product.objects.filter( )
-        #세트메뉴 = Product.objects.filter( )
+    def get(self, request, id):
+        queryset = Product.objects.filter(category=id)
         serializer = ProductSerializer(queryset ,many=True)
         return Response(serializer.data)
