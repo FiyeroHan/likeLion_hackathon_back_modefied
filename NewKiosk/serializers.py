@@ -15,7 +15,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__', 'products'
-
+#products 추가 
 class Product_OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product_Order

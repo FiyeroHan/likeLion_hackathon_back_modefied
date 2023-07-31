@@ -25,5 +25,6 @@ urlpatterns = [
     path('', include("NewKiosk.urls")),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ]
+# 
 
 
