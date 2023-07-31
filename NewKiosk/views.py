@@ -27,11 +27,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = OrderSerializer
-    
-class MenuViewSet(viewsets.ModelViewSet):
-    queryset = MenuSerializer.objects.all()
-    serializer_class = MenuSerializer
 
 class TestApiView(APIView):
     def get(self, request):
-        return
+        return Response(MenuSerializer.data)
