@@ -29,7 +29,7 @@ routers.register('category', CategoryViewSet)
 routers.register('product', ProductViewSet)
 routers.register('order', OrderViewSet)
 routers.register('product-order', Product_OrderViewSet)
-routers.register('Menu', MenuViewSet)
+routers.register('menu', MenuViewSet)
 
 urlpatterns = [
     path('api/', include(routers.urls)),
