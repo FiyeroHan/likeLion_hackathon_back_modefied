@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mn!0crhkawd!z6g6$ynxxcq)-f%urz)4f&ngvzl5&3$)cd=xo1'
+#SECRET_KEY = 'django-insecure-mn!0crhkawd!z6g6$ynxxcq)-f%urz)4f&ngvzl5&3$)cd=xo1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -97,7 +98,7 @@ SECRET_KEY = get_env_variable('DJANGO_SECRET')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': get_env_variable( BASE_DIR / 'db.sqlite3'),
+        'NAME': str( BASE_DIR / 'db.sqlite3'),
     }
 }
 
