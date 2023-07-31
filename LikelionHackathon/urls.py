@@ -18,13 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.static import serve
 from django.urls import re_path
-from django.conf import settings
+from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("NewKiosk.urls")),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
-]
-# 
+    re_path(r'^static/(?:.*)$', serve, {'document_root': settings.STATIC_ROOT, }),
+] 
+#static 과 미디어 파일을 위한 url 경로 설정
 
 
