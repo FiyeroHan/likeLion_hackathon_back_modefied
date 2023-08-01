@@ -8,9 +8,6 @@ from rest_framework.views import APIView
 from .models import Category, Product, Order, Product_Order
 from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer
 
-class MenuApiView(APIView):
-    def get(self, request):
-        return
     
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -28,7 +25,7 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = OrderSerializer
 
-class TestApiView(APIView):
+class MenuApiView(APIView):
     def get(self, request):
         ttuk = Product.objects.filter(category=1)
         side = Product.objects.filter(category=2)

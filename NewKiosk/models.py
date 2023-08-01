@@ -6,7 +6,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
-    product_detail = models.CharField(max_length=50, null= True)
+    product_detail = models.CharField(max_length=50, blank=True, default="")
     price = models.IntegerField(default=0)
     category = models.ForeignKey('Category', related_name='product', on_delete=models.CASCADE)
     is_soldout = models.BooleanField(default=False)
