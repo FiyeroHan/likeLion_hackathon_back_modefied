@@ -32,5 +32,5 @@ routers.register('product-order', Product_OrderViewSet)
 
 urlpatterns = [
     path('api/', include(routers.urls)),
-    path('api/menu/<int:id>', TestApiView.as_view(), name='test'),
+    path('api/menu/', TestApiView.as_view(), name='test'),
 ]

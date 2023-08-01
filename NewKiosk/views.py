@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from .models import Category, Product, Order, Product_Order
-from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer, MenuSerializer
+from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer
 
 class MenuApiView(APIView):
     def get(self, request):
@@ -29,7 +29,19 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
 class TestApiView(APIView):
-    def get(self, request, id):
-        queryset = Product.objects.filter(category=id)
-        serializer = ProductSerializer(queryset ,many=True)
-        return Response(serializer.data)
+    def get(self, request):
+        ttuk = Product.objects.filter(category=1)
+        side = Product.objects.filter(category=2)
+        sets = Product.objects.filter(category=3)
+
+        ts = ProductSerializer(ttuk, many=True)
+        ss = ProductSerializer(side, many=True)
+        ses = ProductSerializer(sets, many=True)
+
+        response = {
+            "떡볶이류" : ts.data,
+            "사이드" : ss.data,
+            "세트" : ses.data
+        }
+
+        return Response(data=response)
