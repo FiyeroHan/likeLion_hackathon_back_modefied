@@ -38,6 +38,24 @@ class OrderApiView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+#order 만들고 등록 후 DB에서 order_id를 가져와서 
+class Product_OrderAPIView(APIView):
+    def get(self,request):
+        queryset = Product_Order.objects.all()
+        serializer = Product_OrderSerializer(queryset)
+        if serializer.is_valid():
+             serializer.save()
+             order_number = serializer.instance.id  # 주문번호
+             return Response({"order_number": order_number})
+        return Response({"result": "주문 접수가 실패하였습니다"})
+       
+    
+    def post(self,request):
+        serializer = Product_OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()

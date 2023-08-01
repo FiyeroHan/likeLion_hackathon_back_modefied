@@ -73,3 +73,20 @@ class TestSerializer(serializers.Serializer):
 #     "total_price": 5000,
 # }
 
+
+#{
+#    "order": [
+#    {
+#
+#        "products" : [
+# 	    	{
+# 	    		"id" : 1, 
+# 	    		"quantity" : 2 
+# 	    	}
+#        ],
+#        "payment": "현금",
+#        "is_takeout": true,
+#        "total_price": 10000
+#    }   
+#    ]
+#}
