@@ -14,13 +14,14 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('id','payment','is_takeout','total_price')
+        fields = ('payment','is_takeout','total_price')
 
 class Product_OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
+        depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.  
         model = Product_Order
-        fields = ('product''payment', 'is_takeout', 'total_price')
+        fields = '__all__'
 
 '''
 class Product_OrderDetailSerializer(serializers.ModelSerializer):
