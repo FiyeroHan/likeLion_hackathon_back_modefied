@@ -21,6 +21,19 @@ class ProductViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    
+class OrderApiView(APIView):
+    def get(self, request):
+        queryset = Order.objects.all()
+        serializer = OrderSerializer(queryset)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
@@ -53,3 +66,4 @@ class MenuApiView(APIView):
         }
 
         return Response(data=response)
+
