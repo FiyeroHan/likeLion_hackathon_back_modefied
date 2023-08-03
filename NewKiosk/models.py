@@ -18,10 +18,17 @@ class Order(models.Model):
     total_price = models.IntegerField()
     
 class Product_Order(models.Model):
-    product = models.ForeignKey('Product', related_name='order_detail', on_delete=models.SET_NULL, null = True)
-    order = models.ForeignKey('Order', related_name='order_detail',on_delete=models.SET_NULL, null = True)
-    order_num = models.IntegerField() #상품주문개수
-    price = models.IntegerField() #상품개수 * 단가 #
+    products = models.ForeignKey('Product', related_name='order_detail', on_delete=models.SET_NULL, null = True)
+    #order = models.ForeignKey('Order', related_name='order_detail',on_delete=models.SET_NULL, null = True)
+    #order_num = models.IntegerField() #상품주문개수
+
+    #id = models.AutoField(primary_key=True)
+    payment = models.CharField(max_length=50)
+    is_takeout = models.BooleanField(default=True)
+    total_price = models.IntegerField() #상품개수 * 단가 #
     
-    
+class Product_OrderDetail(models.Model):
+    order = models.ForeignKey(Order, related_name='order_details', on_delete=models.CASCADE)
+    id = models.ForeignKey(Product, related_name='product_order_details', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)  # 상품 주문 수량  
    
