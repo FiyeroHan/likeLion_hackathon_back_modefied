@@ -66,4 +66,17 @@ class MenuApiView(APIView):
         }
 
         return Response(data=response)
+    
+class OrderDetailApiView(APIView):
+    def get(self, request, id):
+        order = Order.objects.filter(id=id)
+        order_serializer = OrderSerializer(order)
+        
+        return Response(order_serializer.data)
 
+    def post(self,request):
+        order_serializer = OrderSerializer(data=request.data)
+        if order_serializer.is_valid():
+            order_serializer.save()
+            return Response(order_serializer.data)
+        return Response(order_serializer.errors) 

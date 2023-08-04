@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Order, Product_Order,Product_OrderDetail
+from .models import Category, Product, Order, Product_Order
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,16 +14,15 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ('id','payment','is_takeout','total_price')
 
 class Product_OrderSerializer(serializers.ModelSerializer):
-    products = Product_OrderDetail(many=True)
 
     class Meta:
         model = Product_Order
-        fields =('id','products', 'payment','is_takeout','total_price') 
+        fields = ('product''payment', 'is_takeout', 'total_price')
 
-
+'''
 class Product_OrderDetailSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  #Product모델의 id값 필드 참조 
     quantity = serializers.IntegerField()  # 상품 주문 수량 필드
@@ -31,7 +30,7 @@ class Product_OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product_OrderDetail
         fields = ('id', 'quantity')
-
+'''
 
 '''
 class TestSerializer(serializers.Serializer):

@@ -20,7 +20,7 @@ urlpatterns = [
 from django.urls import path,include
 from django.contrib import admin
 
-from .views import CategoryViewSet,  ProductViewSet, OrderViewSet ,Product_OrderViewSet, MenuApiView
+from .views import CategoryViewSet,  ProductViewSet, OrderViewSet ,Product_OrderViewSet, MenuApiView, OrderDetailApiView
 
 from rest_framework import routers
 
@@ -32,5 +32,6 @@ routers.register('product-order', Product_OrderViewSet)
 
 urlpatterns = [
     path('api/', include(routers.urls)),
-    path('api/menu/', MenuApiView.as_view(), name='test'),
+    path('api/menu/', MenuApiView.as_view(), name='menu'),
+#    path('api/order/<int:id>', OrderDetailApiView.as_view(), name='orderdetail'),
 ]
