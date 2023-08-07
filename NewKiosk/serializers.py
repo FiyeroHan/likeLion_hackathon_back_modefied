@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Order, Product_Order
+from .models import Category, Product, Order, Product_Order, Receipt
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,6 +22,20 @@ class Product_OrderSerializer(serializers.ModelSerializer):
         depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.  
         model = Product_Order
         fields = '__all__'
+
+class ReceiptSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        depth = 1
+        model = Receipt
+        fields = '__all__'
+        
+'''        
+class Detail_ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('product_name')
+'''
 
 '''
 class Product_OrderDetailSerializer(serializers.ModelSerializer):
