@@ -27,9 +27,9 @@ class Order(models.Model):
 
 class Product_Order(models.Model):
     product = models.ForeignKey(
-        'Product', related_name='product_order', on_delete=models.CASCADE, null=True)
+        'Product', related_name='product_order', on_delete=models.CASCADE)
     order = models.ForeignKey(
-        'Order', related_name='product_order', on_delete=models.CASCADE, null=True)
+        'Order', related_name='product_order', on_delete=models.CASCADE)
 
 
 class Receipt(models.Model):
