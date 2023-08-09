@@ -42,13 +42,26 @@ class OrderApiView(APIView):
         for product_num in serializer.initial_data["products"]:
             product_nums.append(product_num)
 
-
-        
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-# order 만들고 등록 후 DB에서 order_id를 가져와서
+
+        else:
+            return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
+
+        for product_num in product_nums:
+            print(product_nums)
+            print(product_num)
+            response = {}
+            response["order"] = serializer.instance.id
+            response["product"] = product_num
+            serializer2 = Product_OrderSerializer(data=response)
+            if serializer2.is_valid():
+                print("okaaaaay!")
+                serializer2.save()
+
+        order_number = serializer.instance.id  # 주문번호
+        return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
+        # 주문 성공시 주문번호 반환
 
 
 class Product_OrderAPIView(APIView):
@@ -136,17 +149,17 @@ class ReceiptApiView(APIView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-       
+
     def get(self, request, order_id):
         queryset = Receipt.objects.all()
         serializer = ReceiptSerializer(queryset)
         if serializer.is_valid():
-            #order_id = Order.objects.get(id=order_id)
+            # order_id = Order.objects.get(id=order_id)
             # order_number = serializer.instance.id  # 주문번호
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    def post(self, request,order_id):
+    def post(self, request, order_id):
         serializer = ReceiptSerializer(data=request.data)
         if serializer.is_valid():
             order_id = Order.objects.get(id=order_id)
@@ -154,17 +167,10 @@ class ReceiptApiView(APIView):
         return Response({"result": "주문 접수가 실패하였습니다"})
 
 
-
 class OrderDetailApiView(APIView):
     def get(self, request, id):
         order = Order.objects.filter(id=id)
-        order_serializer = OrderSerializer(order)
+        order_serializer = OrderSerializer(order, many=True)
 
         return Response(order_serializer.data)
 
-    def post(self, request):
-        order_serializer = OrderSerializer(data=request.data)
-        if order_serializer.is_valid():
-            order_serializer.save()
-            return Response(order_serializer.data)
-        return Response(order_serializer.errors)
