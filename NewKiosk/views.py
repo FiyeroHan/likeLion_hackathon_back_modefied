@@ -56,18 +56,14 @@ class OrderApiView(APIView):
             response2["product"] = product_num
             serializer2 = Product_OrderSerializer(data=response2)
             if serializer2.is_valid():
-<<<<<<< HEAD
                 print("okaaaaay!")
-=======
->>>>>>> 7bbe761e3c995028e1b6e44be85b4363938a8830
                 serializer2.save()
-                
+
         order_number = serializer.instance.id  # 주문번호
         return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
-<<<<<<< HEAD
+
+
         # 주문 성공시 주문번호 반환
-=======
-            #주문 성공시 주문번호 반환
 '''            products.append(Product.objects.filter(id = product_num))
               
         product_serializer = ProductSerializer(products, many=True)
@@ -79,8 +75,6 @@ class OrderApiView(APIView):
             "총 금액" : serializer.data['total_price']
                         
         }
->>>>>>> 7bbe761e3c995028e1b6e44be85b4363938a8830
-
         response3 = {
             "주문정보" :order_serializer,
             "주문상품": product_serializer
@@ -94,6 +88,7 @@ class OrderApiView(APIView):
         else:
             print(serializer3.error_messages)
 '''
+
 
 class Product_OrderAPIView(APIView):
     def get(self, request):
@@ -122,7 +117,6 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # print("=== ProductOrderForm ===", args, kwargs, kwargs["request"])
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -140,17 +134,14 @@ class MenuApiView(APIView):
         ttuk = Product.objects.filter(category=1)
         side = Product.objects.filter(category=2)
         sets = Product.objects.filter(category=3)
-
         ts = ProductSerializer(ttuk, many=True)
         ss = ProductSerializer(side, many=True)
         ses = ProductSerializer(sets, many=True)
-
         response = {
             "떡볶이류": ts.data,
             "사이드": ss.data,
             "세트": ses.data
         }
-
         return Response(data=response)
 
 # 오더 만들고 오더 등록. 아이디 받아서 프로덕트에 등록.
@@ -176,32 +167,9 @@ class Product_OrderApiView(APIView):
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ReceiptApiView(APIView):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def get(self, request, order_id):
-        queryset = Receipt.objects.all()
-        serializer = ReceiptSerializer(queryset)
-        if serializer.is_valid():
-            # order_id = Order.objects.get(id=order_id)
-            # order_number = serializer.instance.id  # 주문번호
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
-    def post(self, request, order_id):
-        serializer = ReceiptSerializer(data=request.data)
-        if serializer.is_valid():
-            order_id = Order.objects.get(id=order_id)
-            return Response({"order_id": order_id})
-        return Response({"result": "주문 접수가 실패하였습니다"})
-
-
 class OrderDetailApiView(APIView):
     def get(self, request, id):
         order = Order.objects.filter(id=id)
         order_serializer = OrderSerializer(order, many=True)
 
         return Response(order_serializer.data)
-

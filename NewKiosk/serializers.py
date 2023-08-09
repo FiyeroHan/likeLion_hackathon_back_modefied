@@ -44,12 +44,12 @@ class Product_OrderSerializer(serializers.ModelSerializer):
 
 class ReceiptSerializer(serializers.ModelSerializer):
 
-    order = OrderSerializer()
-    product = ProductSerializer(many=True)
+    주문정보 = OrderReceiptSerializer()
+    주문상품 = Product_OrderSerializer(many=True)
 
     class Meta:
         model = Receipt
-        fields = ['order', 'product']
+        fields = ['주문정보', '주문상품']
         # exclude = ['related_order']
 
 
