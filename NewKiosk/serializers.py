@@ -1,35 +1,47 @@
 from rest_framework import serializers
 from .models import Category, Product, Order, Product_Order, Receipt
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
+        depth = 1
         model = Product
-        fields = '__all__'
+        fields = ['id', 'product_name', 'product_detail',
+                  'price', 'is_soldout', 'quantity', 'category']
+
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
+        depth = 1
         model = Order
-        fields = ('payment','is_takeout','total_price')
+        fields = ['id', 'payment', 'is_takeout', 'total_price']
+        
+        
+
 
 class Product_OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
-        depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.  
+        depth = 1  # 안의 값 참조할 때 저걸 사용해주면 된다.
         model = Product_Order
         fields = '__all__'
+
 
 class ReceiptSerializer(serializers.ModelSerializer):
 
     class Meta:
-        depth = 1
         model = Receipt
+        depth = 1
         fields = '__all__'
-        
+        # exclude = ['related_order']
+
+
 '''        
 class Detail_ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -74,19 +86,24 @@ class TestSerializer(serializers.Serializer):
 # }
 
 
-#{
-#    "order": [
-#    {
-#
-#        "products" : [
-# 	    	{
-# 	    		"id" : 1, 
-# 	    		"quantity" : 2 
-# 	    	}
-#        ],
-#        "payment": "현금",
-#        "is_takeout": true,
-#        "total_price": 10000
-#    }   
-#    ]
-#}
+
+# {
+#     "id": 2,
+#     "order": {
+#         "id": 2,
+#         "payment": "카드",
+#         "is_takeout": false,
+#         "total_price": 3000
+#     },
+#     "product": [
+#         {
+#             "id": 1,
+#             "product_name": "떡볶이",
+#             "product_detail": "",
+#             "price": 3000,
+#             "is_soldout": false,
+#             "quantity": 0,
+#             "category": 1
+#         }
+#     ]
+# }
