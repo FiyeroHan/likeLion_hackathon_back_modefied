@@ -26,7 +26,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class Product_OrderSerializer(serializers.ModelSerializer):
-
     class Meta:
         depth = 1  # 안의 값 참조할 때 저걸 사용해주면 된다.
         model = Product_Order
@@ -34,6 +33,9 @@ class Product_OrderSerializer(serializers.ModelSerializer):
 
 
 class ReceiptSerializer(serializers.ModelSerializer):
+    
+    order = OrderSerializer()
+    product = ProductSerializer(many=True)
 
     class Meta:
         model = Receipt

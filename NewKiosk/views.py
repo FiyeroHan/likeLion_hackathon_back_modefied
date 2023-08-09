@@ -33,11 +33,17 @@ class ReceiptViewSet(viewsets.ModelViewSet):
 class OrderApiView(APIView):
     def get(self, request):
         queryset = Order.objects.all()
-        serializer = OrderSerializer(queryset)
+        serializer = OrderSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = OrderSerializer(data=request.data)
+        product_nums = []
+        for product_num in serializer.initial_data["products"]:
+            product_nums.append(product_num)
+
+
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
