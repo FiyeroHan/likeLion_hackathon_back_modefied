@@ -39,12 +39,12 @@ class OrderReceiptSerializer(serializers.ModelSerializer):
                 
 class ReceiptSerializer(serializers.ModelSerializer):
     
-    주문정보 = OrderReceiptSerializer()
-    주문상품 = Product_OrderSerializer(many=True)
+    order = OrderReceiptSerializer()
+    product = ProductReceiptSerializer(many=True)
 
     class Meta:
         model = Receipt
-        fields = ['주문정보', '주문상품']
+        fields = ['order', 'product']
         
 '''        
 class Detail_ProductSerializer(serializers.ModelSerializer):
