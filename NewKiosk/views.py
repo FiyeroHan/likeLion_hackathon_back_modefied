@@ -7,7 +7,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from .models import Category, Product, Order, Product_Order, Receipt
-from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer, ReceiptSerializer
+from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer, ReceiptSerializer, OrderReceiptSerializer, ProductReceiptSerializer
 
     
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -35,11 +35,11 @@ class OrderApiView(APIView):
     def post(self, request):
         serializer = OrderSerializer(data=request.data)
         product_nums = []
+        products = []
         for product_num in serializer.initial_data["products"]:
             product_nums.append(product_num)
+# 시리얼라이즈 데이터 접근 3가지: https://velog.io/@94incheon/DRF-Serializer-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC3%EA%B0%80%EC%A7%80
 
-
-        
         if serializer.is_valid():
             serializer.save()  
         
@@ -47,20 +47,41 @@ class OrderApiView(APIView):
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
             
         for product_num in product_nums:
-            print(product_nums)
-            print(product_num)
-            response = {}
-            response["order"] = serializer.instance.id
-            response["product"] = product_num
-            serializer2 = Product_OrderSerializer(data=response)
+            response2 = {}
+            response2["order"] = serializer.instance.id
+            response2["product"] = product_num
+            serializer2 = Product_OrderSerializer(data=response2)
             if serializer2.is_valid():
-                print("okaaaaay!")  
                 serializer2.save()
-
+                
         order_number = serializer.instance.id  # 주문번호
         return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
             #주문 성공시 주문번호 반환
+'''            products.append(Product.objects.filter(id = product_num))
+              
+        product_serializer = ProductSerializer(products, many=True)
+        
+        order_serializer = {
+            "주문 번호": serializer.data['id'],
+            "결제 방식": serializer.data['payment'],
+            "포장 여부" : serializer.data['is_takeout'],
+            "총 금액" : serializer.data['total_price']
+                        
+        }
 
+        response3 = {
+            "주문정보" :order_serializer,
+            "주문상품": product_serializer
+        }
+        
+        print(response3)
+        serializer3 = ReceiptSerializer(data=response3)
+        if serializer3.is_valid():
+            print("구우우웃")
+            serializer3.save()
+        else:
+            print(serializer3.error_messages)
+'''
 
 
 class Product_OrderViewSet(viewsets.ModelViewSet):

@@ -11,24 +11,12 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
-        
-        
-class ProductReceiptSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ('product_name', 'product_detail', 'price', 'quantity')
 
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
-        
-
-class OrderReceiptSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ('payment','is_takeout','total_price')        
 
 
 class Product_OrderSerializer(serializers.ModelSerializer):
@@ -37,14 +25,26 @@ class Product_OrderSerializer(serializers.ModelSerializer):
         model = Product_Order
         fields = '__all__'
 
+
+class ProductReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('product_name', 'product_detail', 'price', 'quantity')
+        
+
+class OrderReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('id','payment','is_takeout','total_price')        
+                
 class ReceiptSerializer(serializers.ModelSerializer):
     
-    order = OrderReceiptSerializer()
-    product = ProductReceiptSerializer(many=True)
+    주문정보 = OrderReceiptSerializer()
+    주문상품 = Product_OrderSerializer(many=True)
 
     class Meta:
         model = Receipt
-        fields = ['product', 'order']
+        fields = ['주문정보', '주문상품']
         
 '''        
 class Detail_ProductSerializer(serializers.ModelSerializer):
