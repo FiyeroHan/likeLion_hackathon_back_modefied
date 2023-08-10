@@ -29,15 +29,39 @@ class ReceiptViewSet(viewsets.ModelViewSet):
 class OrderApiView(APIView):
     def get(self, request):
         queryset = Order.objects.all()
-        serializer = OrderSerializer(queryset)
+        serializer = OrderSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = OrderSerializer(data=request.data)
+        product_nums = []
+        for product_num in serializer.initial_data["products"]:
+            product_nums.append(product_num)
+
+
+        
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+            serializer.save()  
+        
+        else:
+            return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        for product_num in product_nums:
+            print(product_nums)
+            print(product_num)
+            response = {}
+            response["order"] = serializer.instance.id
+            response["product"] = product_num
+            serializer2 = Product_OrderSerializer(data=response)
+            if serializer2.is_valid():
+                print("okaaaaay!")  
+                serializer2.save()
+
+        order_number = serializer.instance.id  # 주문번호
+        return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
+            #주문 성공시 주문번호 반환
+
+
 
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
@@ -101,13 +125,6 @@ class Product_OrderApiView(APIView):
 class OrderDetailApiView(APIView):
     def get(self, request, id):
         order = Order.objects.filter(id=id)
-        order_serializer = OrderSerializer(order)
+        order_serializer = OrderSerializer(order, many=True)
         
         return Response(order_serializer.data)
-
-    def post(self,request):
-        order_serializer = OrderSerializer(data=request.data)
-        if order_serializer.is_valid():
-            order_serializer.save()
-            return Response(order_serializer.data)
-        return Response(order_serializer.errors) 

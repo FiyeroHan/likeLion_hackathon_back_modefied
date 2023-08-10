@@ -6,29 +6,45 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        
+        
+class ProductReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('product_name', 'product_detail', 'price', 'quantity')
+
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('payment','is_takeout','total_price')
+        fields = '__all__'
+        
+
+class OrderReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('payment','is_takeout','total_price')        
+
 
 class Product_OrderSerializer(serializers.ModelSerializer):
-
     class Meta:
-        depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.  
+#        depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.  
         model = Product_Order
         fields = '__all__'
 
 class ReceiptSerializer(serializers.ModelSerializer):
+    
+    order = OrderReceiptSerializer()
+    product = ProductReceiptSerializer(many=True)
 
     class Meta:
-        depth = 1
         model = Receipt
-        fields = '__all__'
+        fields = ['product', 'order']
         
 '''        
 class Detail_ProductSerializer(serializers.ModelSerializer):
