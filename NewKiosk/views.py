@@ -37,31 +37,49 @@ class OrderApiView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = OrderSerializer(data=request.data)
         product_nums = []
-        products = []
+
+        product_quantities = []
+        for product_quantity in request.data["quantity"]:
+            product_quantities.append(product_quantity)
+
+        response = {}
+        response["payment"] = request.data["payment"]
+        response["is_takeout"] = request.data["is_takeout"]
+        response["total_price"] = request.data["total_price"]
+        response["products"] = request.data["products"]
+        serializer = OrderSerializer(data=response)
+
+
+#        products = []
+
         for product_num in serializer.initial_data["products"]:
+            print(product_num)
             product_nums.append(product_num)
 # 시리얼라이즈 데이터 접근 3가지: https://velog.io/@94incheon/DRF-Serializer-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC3%EA%B0%80%EC%A7%80
 
+# Product_Order에 추가
         if serializer.is_valid():
             serializer.save()
+            print("order saved")
 
         else:
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
-        for product_num in product_nums:
+        print(product_quantities)
+        print((product_nums, product_quantities))
+        for i in range(len(product_nums)):
+            print("for문 들어옴")
             response2 = {}
             response2["order"] = serializer.instance.id
-            response2["product"] = product_num
+            response2["product"] = product_nums[i]
+            response2["quantity"] = product_quantities[i]
             serializer2 = Product_OrderSerializer(data=response2)
             if serializer2.is_valid():
-                print("okaaaaay!")
                 serializer2.save()
 
         order_number = serializer.instance.id  # 주문번호
         return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
-
 
         # 주문 성공시 주문번호 반환
 '''            products.append(Product.objects.filter(id = product_num))
@@ -75,6 +93,7 @@ class OrderApiView(APIView):
             "총 금액" : serializer.data['total_price']
                         
         }
+
         response3 = {
             "주문정보" :order_serializer,
             "주문상품": product_serializer
@@ -90,24 +109,6 @@ class OrderApiView(APIView):
 '''
 
 
-class Product_OrderAPIView(APIView):
-    def get(self, request):
-        queryset = Product_Order.objects.all()
-        serializer = Product_OrderSerializer(queryset)
-        if serializer.is_valid():
-            serializer.save()
-            order_number = serializer.instance.id  # 주문번호
-            return Response({"order_number": order_number})
-        return Response({"result": "주문 접수가 실패하였습니다"})
-
-    def post(self, request):
-        serializer = Product_OrderSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
-
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = Product_OrderSerializer
@@ -117,6 +118,7 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # print("=== ProductOrderForm ===", args, kwargs, kwargs["request"])
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -134,14 +136,17 @@ class MenuApiView(APIView):
         ttuk = Product.objects.filter(category=1)
         side = Product.objects.filter(category=2)
         sets = Product.objects.filter(category=3)
+
         ts = ProductSerializer(ttuk, many=True)
         ss = ProductSerializer(side, many=True)
         ses = ProductSerializer(sets, many=True)
+
         response = {
             "떡볶이류": ts.data,
             "사이드": ss.data,
             "세트": ses.data
         }
+
         return Response(data=response)
 
 # 오더 만들고 오더 등록. 아이디 받아서 프로덕트에 등록.
