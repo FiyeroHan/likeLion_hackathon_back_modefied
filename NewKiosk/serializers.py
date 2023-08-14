@@ -10,10 +10,21 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        depth = 1
         model = Product
-        fields = ['id', 'product_name', 'product_detail',
-                  'price', 'is_soldout', 'quantity', 'category']
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
+class Product_OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        #        depth = 1 #안의 값 참조할 때 저걸 사용해주면 된다.
+        model = Product_Order
+        fields = '__all__'
 
 
 class ProductReceiptSerializer(serializers.ModelSerializer):
@@ -22,60 +33,56 @@ class ProductReceiptSerializer(serializers.ModelSerializer):
         fields = ('product_name', 'product_detail', 'price', 'quantity')
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        depth = 1
-        model = Order
-        fields = '__all__'
-
-
 class OrderReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('id', 'payment', 'is_takeout', 'total_price')
+        fields = ('id', 'payment', 'is_takeout',
+                  'total_price', 'products')
 
+    def create(self, validated_data):
+        products_data = validated_data.pop('products')
+        order = Order.objects.create(**validated_data)
 
-class Product_OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        # depth = 1  # 안의 값 참조할 때 저걸 사용해주면 된다.
-        model = Product_Order
-        fields = '__all__'
+        for product_data in products_data:
+            Product_Order.objects.create(order=order, **product_data)
+
+        Receipt.objects.create(order=order)
+
+        return order
 
 
 class ReceiptSerializer(serializers.ModelSerializer):
 
-    주문정보 = OrderReceiptSerializer()
-    주문상품 = Product_OrderSerializer(many=True)
+    order = serializers.SerializerMethodField()
+    products = serializers.SerializerMethodField()
 
     class Meta:
         model = Receipt
-        fields = ['주문정보', '주문상품']
-        # exclude = ['related_order']
+        fields = ('id', 'order', 'products')
 
+    def get_order(self, obj):
+        order = {
+            "id": obj.order.id,
+            "payment": obj.order.payment,
+            "is_takeout": obj.order.is_takeout,
+            "total_price": obj.order.total_price,
+        }
+        return order
 
-'''        
-class Detail_ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ('product_name')
-'''
+    def get_products(self, obj):
+        # 동일한 order id를 가진 product_order를 가져오게끔 필터링
+        products_order = Product_Order.objects.filter(order=obj.order.id)
+        products = [{
+            "id": product_order.product.id,
+            "product_name": product_order.product.product_name,
+            "product_detail": product_order.product.product_detail,
+            "price": product_order.product.price,
+            "is_soldout": product_order.product.is_soldout,
+            "category": product_order.product.category.id,
+            "quantity": product_order.quantity,
+        } for product_order in products_order]
+        return products
 
-'''
-class Product_OrderDetailSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  #Product모델의 id값 필드 참조 
-    quantity = serializers.IntegerField()  # 상품 주문 수량 필드
-
-    class Meta:
-        model = Product_OrderDetail
-        fields = ('id', 'quantity')
-'''
-
-'''
-class TestSerializer(serializers.Serializer):
-    class Meta:
-        model = Product
-        fields = ''
-'''
 
 # POST /api/product-order/
 
@@ -94,26 +101,4 @@ class TestSerializer(serializers.Serializer):
 # 	"payment": "카드",
 #     "is_takeout": false,
 #     "total_price": 5000,
-# }
-
-
-# {
-#     "id": 2,
-#     "order": {
-#         "id": 2,
-#         "payment": "카드",
-#         "is_takeout": false,
-#         "total_price": 3000
-#     },
-#     "product": [
-#         {
-#             "id": 1,
-#             "product_name": "떡볶이",
-#             "product_detail": "",
-#             "price": 3000,
-#             "is_soldout": false,
-#             "quantity": 0,
-#             "category": 1
-#         }
-#     ]
 # }

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 
 
 from rest_framework import viewsets
@@ -23,11 +23,6 @@ class ProductViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-
-
-class ReceiptViewSet(viewsets.ModelViewSet):
-    queryset = Receipt.objects.all()
-    serializer_class = ReceiptSerializer
 
 
 class OrderApiView(APIView):
@@ -78,6 +73,11 @@ class OrderApiView(APIView):
             if serializer2.is_valid():
                 serializer2.save()
 
+        # 영수증 생성 코드 추가
+        receipt = Receipt.objects.create(order=serializer.instance)
+        receipt.product.set(product_nums)
+        receipt.save()
+
         order_number = serializer.instance.id  # 주문번호
         return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
 
@@ -107,6 +107,11 @@ class OrderApiView(APIView):
         else:
             print(serializer3.error_messages)
 '''
+
+
+class ReceiptViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Receipt.objects.all()
+    serializer_class = ReceiptSerializer
 
 
 class Product_OrderViewSet(viewsets.ModelViewSet):
