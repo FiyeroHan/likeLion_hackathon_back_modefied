@@ -33,24 +33,44 @@ class OrderApiView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = OrderSerializer(data=request.data)
         product_nums = []
-        products = []
-        for product_num in serializer.initial_data["products"]:
+                
+        product_quantities = []
+        for product_quantity in request.data["quantity"]:
+            product_quantities.append(product_quantity)
+        
+        response ={}
+        response["payment"] = request.data["payment"]
+        response["is_takeout"] = request.data["is_takeout"]
+        response["total_price"] = request.data["total_price"]
+        response["products"] = request.data["products"]
+        serializer = OrderSerializer(data=response)
+
+
+#        products = []
+
+
+        for product_num in serializer.initial_data["products"] :
+            print(product_num)
             product_nums.append(product_num)
 # 시리얼라이즈 데이터 접근 3가지: https://velog.io/@94incheon/DRF-Serializer-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC3%EA%B0%80%EC%A7%80
 
 # Product_Order에 추가
         if serializer.is_valid():
             serializer.save()  
+            print("order saved")            
         
         else:
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
             
-        for product_num in product_nums:
+        print(product_quantities)
+        print((product_nums, product_quantities))
+        for i in range(len(product_nums)):
+            print("for문 들어옴")                  
             response2 = {}
             response2["order"] = serializer.instance.id
-            response2["product"] = product_num
+            response2["product"] = product_nums[i]
+            response2["quantity"] = product_quantities[i]
             serializer2 = Product_OrderSerializer(data=response2)
             if serializer2.is_valid():
                 serializer2.save()

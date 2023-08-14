@@ -12,7 +12,6 @@ class Product(models.Model):
     category = models.ForeignKey('Category', related_name='product', on_delete=models.CASCADE)
     is_soldout = models.BooleanField(default=False)
 #    related_order = models.ManyToManyField('Order', through='Product_Order', related_name= 'a_product')
-    quantity = models.IntegerField(default=0)
 
     
 class Order(models.Model):
@@ -24,6 +23,7 @@ class Order(models.Model):
 class Product_Order(models.Model):
     order = models.ForeignKey('Order', related_name='product_order',on_delete=models.CASCADE, null = False)
     product = models.ForeignKey('Product', related_name='product_order', on_delete=models.CASCADE, null = False)
+    quantity = models.IntegerField(default=0)
 
     
 class Receipt(models.Model):
