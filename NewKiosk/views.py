@@ -40,6 +40,7 @@ class OrderApiView(APIView):
             product_nums.append(product_num)
 # 시리얼라이즈 데이터 접근 3가지: https://velog.io/@94incheon/DRF-Serializer-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC3%EA%B0%80%EC%A7%80
 
+# Product_Order에 추가
         if serializer.is_valid():
             serializer.save()  
         
