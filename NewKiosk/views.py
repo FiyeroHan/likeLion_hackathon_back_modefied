@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 
 
 from rest_framework import viewsets
@@ -9,23 +9,22 @@ from rest_framework.views import APIView
 from .models import Category, Product, Order, Product_Order, Receipt
 from .serializers import OrderSerializer, ProductSerializer, CategorySerializer, Product_OrderSerializer, ReceiptSerializer, OrderReceiptSerializer, ProductReceiptSerializer
 
-    
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    
-class ReceiptViewSet(viewsets.ModelViewSet):
-    queryset = Receipt.objects.all()
-    serializer_class = ReceiptSerializer
-    
+
+
 class OrderApiView(APIView):
     def get(self, request):
         queryset = Order.objects.all()
@@ -34,12 +33,12 @@ class OrderApiView(APIView):
 
     def post(self, request):
         product_nums = []
-                
+
         product_quantities = []
         for product_quantity in request.data["quantity"]:
             product_quantities.append(product_quantity)
-        
-        response ={}
+
+        response = {}
         response["payment"] = request.data["payment"]
         response["is_takeout"] = request.data["is_takeout"]
         response["total_price"] = request.data["total_price"]
@@ -49,24 +48,23 @@ class OrderApiView(APIView):
 
 #        products = []
 
-
-        for product_num in serializer.initial_data["products"] :
+        for product_num in serializer.initial_data["products"]:
             print(product_num)
             product_nums.append(product_num)
 # 시리얼라이즈 데이터 접근 3가지: https://velog.io/@94incheon/DRF-Serializer-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC3%EA%B0%80%EC%A7%80
 
 # Product_Order에 추가
         if serializer.is_valid():
-            serializer.save()  
-            print("order saved")            
-        
+            serializer.save()
+            print("order saved")
+
         else:
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
-            
+
         print(product_quantities)
         print((product_nums, product_quantities))
         for i in range(len(product_nums)):
-            print("for문 들어옴")                  
+            print("for문 들어옴")
             response2 = {}
             response2["order"] = serializer.instance.id
             response2["product"] = product_nums[i]
@@ -74,10 +72,16 @@ class OrderApiView(APIView):
             serializer2 = Product_OrderSerializer(data=response2)
             if serializer2.is_valid():
                 serializer2.save()
-                
+
+        # 영수증 생성 코드 추가
+        receipt = Receipt.objects.create(order=serializer.instance)
+        receipt.product.set(product_nums)
+        receipt.save()
+
         order_number = serializer.instance.id  # 주문번호
         return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
-            #주문 성공시 주문번호 반환
+
+        # 주문 성공시 주문번호 반환
 '''            products.append(Product.objects.filter(id = product_num))
               
         product_serializer = ProductSerializer(products, many=True)
@@ -105,9 +109,16 @@ class OrderApiView(APIView):
 '''
 
 
+class ReceiptViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Receipt.objects.all()
+    serializer_class = ReceiptSerializer
+
+
 class Product_OrderViewSet(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = Product_OrderSerializer
+
+
 '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -123,6 +134,8 @@ class Product_OrderViewSet(viewsets.ModelViewSet):
         else:
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
             '''
+
+
 class MenuApiView(APIView):
     def get(self, request):
         ttuk = Product.objects.filter(category=1)
@@ -134,21 +147,21 @@ class MenuApiView(APIView):
         ses = ProductSerializer(sets, many=True)
 
         response = {
-            "떡볶이류" : ts.data,
-            "사이드" : ss.data,
-            "세트" : ses.data
+            "떡볶이류": ts.data,
+            "사이드": ss.data,
+            "세트": ses.data
         }
 
         return Response(data=response)
-    
-#오더 만들고 오더 등록. 아이디 받아서 프로덕트에 등록.
-#새로운 product_order를 다시 만든다.
-#그 product_order를 다시 DB에 저장.
+
+# 오더 만들고 오더 등록. 아이디 받아서 프로덕트에 등록.
+# 새로운 product_order를 다시 만든다.
+# 그 product_order를 다시 DB에 저장.
+
 
 class Product_OrderApiView(APIView):
-#    def post(self, request):
-    
-    
+    #    def post(self, request):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # print("=== ProductOrderForm ===", args, kwargs, kwargs["request"])
@@ -159,14 +172,14 @@ class Product_OrderApiView(APIView):
             self.perform_create(serializer)
             order_number = serializer.instance.id  # 주문번호
             return Response({"order_number": order_number}, status=status.HTTP_201_CREATED)
-            #주문 성공시 주문번호 반환
+            # 주문 성공시 주문번호 반환
         else:
             return Response({"result": "주문 접수가 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class OrderDetailApiView(APIView):
     def get(self, request, id):
         order = Order.objects.filter(id=id)
         order_serializer = OrderSerializer(order, many=True)
-        
+
         return Response(order_serializer.data)
